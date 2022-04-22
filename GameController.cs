@@ -17,14 +17,15 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1")) {
-            // force 13000. torque: 175 forward and up
-            ball.Shoot(Vector3.forward, 10000, 0);
-        }
         if (Input.GetButton("Jump")) {
             world.DoDestroy(GetBack);
         }
     }
+
+    public void Shoot() {
+        ball.Shoot(Vector3.forward, 10000, 0);
+    }
+
 
     public void GetBack() {
         Debug.Log("Get back!");
