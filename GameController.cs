@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -19,6 +19,8 @@ public class GameController : MonoBehaviour
 
     int state = 0;
     int shots = 0;
+    public GameObject playAgainPanel;
+
     public ForceMeterController force;
 
     // Start is called before the first frame update
@@ -26,6 +28,9 @@ public class GameController : MonoBehaviour
     {
         direction = Vector3.forward;
 
+    }
+    public void PlayAgain() {
+        SceneManager.LoadScene(0);
     }
 
     public void Rotate(int side) {
@@ -64,10 +69,19 @@ public class GameController : MonoBehaviour
         rightTorque.fillAmount = (Mathf.Max(torque, 0));
     }
 
+    int hasShot = 0;
     public void BallHasFallen() {
         shots += 1;
-        if (shots == 1) { 
+        hasShot += 1;
+        Debug.Log(hasShot);
+        if (shots == 1 && hasShot == 2)
+        {
             world.DoDestroy(GetBack);
+            hasShot++;
+        }
+        else {
+            if(hasShot == 2 )
+             playAgainPanel.SetActive(true);
         }
         Debug.Log("Finished");
     }
@@ -86,6 +100,7 @@ public class GameController : MonoBehaviour
             Vector3 dir = cameraController.transform.TransformDirection(Vector3.forward);
             ball.Shoot(dir, 5000 + f*10000, -torque*1000);
             state += 1;
+            hasShot = 1;
         }
 
 
@@ -104,6 +119,7 @@ public class GameController : MonoBehaviour
         force.Reset();
         SetTorque(0);
         slider.value = 0;
+        hasShot = 0;
     }
 
     public void GetBack() {
