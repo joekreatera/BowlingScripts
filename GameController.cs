@@ -16,12 +16,15 @@ public class GameController : MonoBehaviour
     public Image rightTorque;
     float torque;
 
+    public Text chrono;
 
     int state = 0;
     int shots = 0;
     public GameObject playAgainPanel;
 
     public ForceMeterController force;
+
+    public GameObject pinContainer;
 
     // Start is called before the first frame update
     void Start()
@@ -57,9 +60,22 @@ public class GameController : MonoBehaviour
     }
 
     // Update is called once per frame
+    float seconds = 0.0f;
+    int chronoState = 0;
     void Update()
     {
-        
+        if (chronoState == 1) {
+
+            seconds += Time.deltaTime;
+            int s = (int)(seconds);
+            float ms = (int)((seconds - s) * 100);
+
+            chrono.text = s + ":" + (""+ms).PadLeft(2,'0');
+
+            if (seconds >= 7) {
+                BallHasFallen();
+            }
+        }
     }
 
     public void SetTorque(int torqueDiff) {
@@ -71,6 +87,11 @@ public class GameController : MonoBehaviour
 
     int hasShot = 0;
     public void BallHasFallen() {
+        if (chronoState > 1) {
+            return;
+        }
+
+        chronoState = 2;
         shots += 1;
         hasShot += 1;
         Debug.Log(hasShot);
@@ -101,12 +122,25 @@ public class GameController : MonoBehaviour
             ball.Shoot(dir, 5000 + f*10000, -torque*1000);
             state += 1;
             hasShot = 1;
+            chronoState = 1;
+            seconds = 0;
         }
 
 
     }
 
     public void ResetAll() {
+
+        for (int i = 0; i < pinContainer.transform.childCount; i++) {
+
+            Transform t = pinContainer.transform.GetChild(i);
+            Vector3 ang = t.eulerAngles;
+
+            if (ang.x > 5 || ang.z > 5) {
+                Destroy(t.gameObject);
+            }
+        }
+
         Rigidbody bb = ball.gameObject.GetComponent<Rigidbody>();
         bb.velocity = Vector3.zero;
         bb.angularVelocity = Vector3.zero;
