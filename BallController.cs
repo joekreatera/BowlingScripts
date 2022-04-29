@@ -5,10 +5,13 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     Rigidbody body;
+    public AudioSource audio;
+    
     // Start is called before the first frame update
     void Start()
     {
         body = this.GetComponent<Rigidbody>();
+        audio = this.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -21,7 +24,7 @@ public class BallController : MonoBehaviour
 
         body.AddForce(dir*force, ForceMode.Force);
         body.AddTorque(Vector3.up * torque+ Vector3.forward * torque, ForceMode.Force);
-
+        audio.Play();
     }
 
 }

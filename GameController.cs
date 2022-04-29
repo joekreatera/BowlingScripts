@@ -30,7 +30,6 @@ public class GameController : MonoBehaviour
     void Start()
     {
         direction = Vector3.forward;
-
     }
     public void PlayAgain() {
         SceneManager.LoadScene(0);
